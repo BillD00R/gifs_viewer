@@ -50,7 +50,8 @@ dependencies {
     val composeUiVersion = "1.7.6"
     implementation ("androidx.compose.ui:ui:$composeUiVersion")
     implementation ("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
-    implementation ("androidx.compose.material:material:1.2.0")
+    implementation ("androidx.compose.material:material:$composeUiVersion")
+    implementation ("androidx.compose.material:material-icons-extended:$composeUiVersion")
     testImplementation ("junit:junit:4.13.2")
     androidTestImplementation ("androidx.test.ext:junit:1.1.5")
     androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")

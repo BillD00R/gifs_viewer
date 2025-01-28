@@ -10,12 +10,15 @@ import androidx.room.Query
 interface GifDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAll(gifs: List<GifEntity>)
+    suspend fun insertAll(gifs: List<GifEntity>)
 
-    @Query("SELECT * FROM gifentity")
+    @Query("SELECT * FROM gif_entity")
     fun pagingSource(): PagingSource<Int, GifEntity>
 
-    @Query("DELETE FROM gifentity")
+    @Query("DELETE FROM gif_entity")
     suspend fun clearAll()
+
+    @Query("DELETE FROM gif_entity WHERE remote_id = :remoteId")
+    suspend fun delete(remoteId: String)
 
 }

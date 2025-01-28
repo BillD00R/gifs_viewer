@@ -10,7 +10,9 @@ import com.bill_d00r.gifsviewer.data.local.GifEntity
 import com.bill_d00r.gifsviewer.data.remote.GifImageDownloader
 import com.bill_d00r.gifsviewer.data.remote.GifImageDownloaderImpl
 import com.bill_d00r.gifsviewer.data.remote.GiphyApi
-import com.bill_d00r.gifsviewer.data.remote.GiphyRemoteMediator
+import com.bill_d00r.gifsviewer.data.remote.repository.GiphyRemoteMediator
+import com.bill_d00r.gifsviewer.data.remote.repository.GiphyRepository
+import com.bill_d00r.gifsviewer.data.remote.repository.GiphyRepositoryImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -54,23 +56,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGifPager(gifDb: GifDatabase, giphyApi: GiphyApi, gifImageDownloader: GifImageDownloader): Pager<Int, GifEntity> {
-        return Pager(
-            config = PagingConfig(pageSize = 4),
-            remoteMediator = GiphyRemoteMediator(
-                gifDatabase = gifDb,
-                giphyApi = giphyApi,
-                gifImageDownloader = gifImageDownloader
-            ),
-            pagingSourceFactory = {
-                gifDb.dao.pagingSource()
-            }
+    fun provideGiphyRepository(gifDb: GifDatabase, giphyApi: GiphyApi, gifImageDownloader: GifImageDownloader): GiphyRepository{
+        return GiphyRepositoryImpl(
+            gifDb = gifDb,
+            giphyApi = giphyApi,
+            gifImageDownloader = gifImageDownloader
         )
     }
 
     @Provides
     @Singleton
-    fun provideGifImageDownloader(@ApplicationContext context: Context, giphyApi: GiphyApi): GifImageDownloader{
+    fun provideGifImageDownloader(@ApplicationContext context: Context, giphyApi: GiphyApi): GifImageDownloader {
         return GifImageDownloaderImpl(
             giphyApi = giphyApi,
             appContext = getApplication(context)

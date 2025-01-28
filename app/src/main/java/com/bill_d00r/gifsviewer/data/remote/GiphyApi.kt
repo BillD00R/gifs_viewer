@@ -10,7 +10,15 @@ interface GiphyApi {
 
     @GET("trending")
     suspend fun getGifs(
-        @Query("apiKey") apiKey: String = API_KEY,
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("offset") offset: Int,
+        @Query("limit") pageCount: Int
+    ): GiphyDto
+
+    @GET("search")
+    suspend fun searchGifs(
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("q") searchQuery: String,
         @Query("offset") offset: Int,
         @Query("limit") pageCount: Int
     ): GiphyDto

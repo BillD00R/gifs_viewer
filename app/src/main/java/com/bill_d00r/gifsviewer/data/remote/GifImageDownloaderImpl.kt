@@ -1,6 +1,7 @@
 package com.bill_d00r.gifsviewer.data.remote
 
 import android.app.Application
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -12,35 +13,47 @@ class GifImageDownloaderImpl @Inject constructor(
     private val appContext: Application
 ) : GifImageDownloader {
     override suspend fun downloadGifImage(imageUrl: String, fileName: String): String {
-        val outputFile = File(appContext.filesDir, fileName)
+
+        val dir = File(appContext.filesDir.path + "/images_cache")
+        if (!dir.exists()) dir.mkdir()
+
+        val outputFile = File(dir, fileName)
+
+        if (outputFile.exists()){
+            Log.d("IMAGE_DOWNLOADER", "File exists: ${outputFile.absolutePath}")
+            return outputFile.absolutePath
+        }
         withContext(Dispatchers.IO) {
 
             try {
                 val responseBody = giphyApi.downloadImage(imageUrl)
 
-                // Save the file to disk
                 responseBody.byteStream().use { inputStream ->
-
                     FileOutputStream(outputFile).use { outputStream ->
                         inputStream.copyTo(outputStream)
                         outputStream.flush()
                         outputStream.close()
                     }
                 }
-
-//                outputFile = Glide
-//                    .with(appContext)
-//                    .downloadOnly()
-//                    .load(imageUrl)
-//                    .submit()
-//                    .get()
-
-                println("File downloaded successfully to ${outputFile.absolutePath} size:${outputFile.totalSpace}")
             }catch (e: Exception){
                 e.printStackTrace()
             }
-
         }
+
         return outputFile.absolutePath
     }
+
+    override suspend fun clearImageCache(){
+        val dir = File(appContext.filesDir.path + "/images_cache")
+        dir.delete()
+    }
+
+//    override suspend fun cleanImageCache(actualFiles : List<String>){
+//        val dir = File(appContext.filesDir.path + "/images_cache")
+//        val files = dir.listFiles()
+//        for (file in files!!){
+//            if (file.absolutePath !in actualFiles)
+//                file.delete()
+//        }
+//    }
 }

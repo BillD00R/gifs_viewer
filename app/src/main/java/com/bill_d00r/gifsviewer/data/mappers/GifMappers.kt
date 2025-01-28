@@ -9,18 +9,23 @@ suspend fun GiphyDto.toGifEntities(imageDownloader: GifImageDownloader, offset: 
     var index = offset
     return data.map {
         val image = it.images.original
-        val uri = imageDownloader.downloadGifImage(
+        
+        val imagePath = imageDownloader.downloadGifImage(
             imageUrl = image.url,
             fileName = "${it.id}.gif"
         )
-
+        val previewImagePath= imageDownloader.downloadGifImage(
+            imageUrl = it.images.previewGif.url,
+            fileName = "${it.id}(preview).gif"
+        )
         GifEntity(
             id = ++index, //Autogenerating local ids
             title = it.title,
             hash = image.hash,
             height = image.height,
             size = image.size,
-            imageUri = uri,
+            imagePath = imagePath,
+            previewImagePath = previewImagePath,
             width = image.width,
             remoteId = it.id
         )
@@ -33,9 +38,11 @@ fun GifEntity.toGif(): Gif {
         hash = hash,
         height = height,
         size = size,
-        imageUri = imageUri,
+        imagePath = imagePath,
+        previewImagePath = previewImagePath,
         width = width,
         title = title,
+        remoteId = remoteId
     )
 }
 

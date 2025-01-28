@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material.TopAppBar
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
             ComposePaging3CachingTheme {
                 val viewModel = hiltViewModel<GifsFeedViewModel>()
                 val navController = rememberNavController()
+
                 NavHost(
                     navController = navController,
                     startDestination = Routes.GIFS_FEED
@@ -33,26 +35,26 @@ class MainActivity : ComponentActivity() {
                         GifsFeedScreen(
                             onNavigate = {
                                 navController.navigate(it.route)
+                                Log.d("ROUTE", "${it.route}")
                             },
                             viewModel = viewModel
                         )
                     }
-                    composable(route = Routes.GIFS_CAROUSEL + "?gifId={gifId}",
+                    composable(route = Routes.GIFS_CAROUSEL + "?index={index}",
                         arguments = listOf(
-                            navArgument(name = "gifId") {
+                            navArgument(name = "index") {
                                 type = NavType.IntType
                                 defaultValue = 1
                             }
                         ))
                     {
-                        val gifId = it.arguments?.getInt("gifId")
-                        Log.d("PAGER_CALL", "GifID: $gifId")
+                        val index = it.arguments?.getInt("index")
                         GifsCarouselScreen(
                             viewModel = viewModel,
                             onPopBackStack = {
                                 navController.popBackStack()
                             },
-                            initialId = gifId ?: 0
+                            initialIndex = index ?: 0
                         )
                     }
 
