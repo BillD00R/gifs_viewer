@@ -15,6 +15,9 @@ interface GifDao {
     @Query("SELECT * FROM gif_entity")
     fun pagingSource(): PagingSource<Int, GifEntity>
 
+    @Query("SELECT * FROM gif_entity WHERE remote_id = :remoteId")
+    fun getFiles(remoteId: String):List<GifEntity>
+
     @Query("DELETE FROM gif_entity")
     suspend fun clearAll()
 

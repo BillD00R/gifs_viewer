@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.room.withTransaction
 import com.bill_d00r.gifsviewer.data.local.DeletedEntity
 import com.bill_d00r.gifsviewer.data.local.GifDatabase
 import com.bill_d00r.gifsviewer.data.local.GifEntity
@@ -12,9 +11,7 @@ import com.bill_d00r.gifsviewer.data.remote.GifImageDownloader
 import com.bill_d00r.gifsviewer.data.remote.GiphyApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GiphyRepositoryImpl @Inject constructor(
@@ -46,10 +43,14 @@ class GiphyRepositoryImpl @Inject constructor(
 
     override fun deleteGif(remoteId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            gifDb.withTransaction {
-                gifDb.dao.delete(remoteId)
-                gifDb.deletedDao.insert(DeletedEntity(deletedId = remoteId))
+            val gifs = gifDb.dao.getFiles(remoteId)
+            gifs.forEach {
+                val files = listOf(it.imagePath, it.previewImagePath)
+                gifImageDownloader.deleteImages(files)
             }
+            gifDb.dao.delete(remoteId)
+            gifDb.deletedDao.insert(DeletedEntity(deletedId = remoteId))
+
         }
     }
 

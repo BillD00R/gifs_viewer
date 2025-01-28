@@ -33,6 +33,7 @@ class GifImageDownloaderImpl @Inject constructor(
                         inputStream.copyTo(outputStream)
                         outputStream.flush()
                         outputStream.close()
+                        inputStream.close()
                     }
                 }
             }catch (e: Exception){
@@ -46,6 +47,13 @@ class GifImageDownloaderImpl @Inject constructor(
     override suspend fun clearImageCache(){
         val dir = File(appContext.filesDir.path + "/images_cache")
         dir.delete()
+    }
+
+    override suspend fun deleteImages(paths: List<String>){
+        paths.forEach { path ->
+            val file = File(path)
+            file.delete()
+        }
     }
 
 //    override suspend fun cleanImageCache(actualFiles : List<String>){
