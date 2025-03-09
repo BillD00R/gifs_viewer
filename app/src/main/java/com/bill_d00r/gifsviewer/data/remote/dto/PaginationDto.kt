@@ -3,6 +3,7 @@ package com.bill_d00r.gifsviewer.data.remote.dto
 
 import com.squareup.moshi.Json
 
+
 data class PaginationDto(
     @Json(name = "total_count")
     val totalCount: Int = 0, // 500

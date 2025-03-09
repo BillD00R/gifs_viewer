@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material.TopAppBar
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -35,7 +34,7 @@ class MainActivity : ComponentActivity() {
                         GifsFeedScreen(
                             onNavigate = {
                                 navController.navigate(it.route)
-                                Log.d("ROUTE", "${it.route}")
+                                Log.d("ROUTE", it.route)
                             },
                             viewModel = viewModel
                         )

@@ -44,11 +44,6 @@ class GifImageDownloaderImpl @Inject constructor(
         return outputFile.absolutePath
     }
 
-    override suspend fun clearImageCache(){
-        val dir = File(appContext.filesDir.path + "/images_cache")
-        dir.delete()
-    }
-
     override suspend fun deleteImages(paths: List<String>){
         paths.forEach { path ->
             val file = File(path)
@@ -56,12 +51,4 @@ class GifImageDownloaderImpl @Inject constructor(
         }
     }
 
-//    override suspend fun cleanImageCache(actualFiles : List<String>){
-//        val dir = File(appContext.filesDir.path + "/images_cache")
-//        val files = dir.listFiles()
-//        for (file in files!!){
-//            if (file.absolutePath !in actualFiles)
-//                file.delete()
-//        }
-//    }
 }

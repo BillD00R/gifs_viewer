@@ -1,6 +1,5 @@
 package com.bill_d00r.gifsviewer.presentation.feed
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
@@ -29,22 +27,10 @@ import com.bill_d00r.gifsviewer.presentation.GifsFeedViewModel
 import com.bill_d00r.gifsviewer.presentation.util.UiEvent
 
 @Composable
-fun GifsFeedScreen(
-    onNavigate: (UiEvent.Navigate) -> Unit,
-    viewModel: GifsFeedViewModel
-) {
-    val context = LocalContext.current
+fun GifsFeedScreen(onNavigate: (UiEvent.Navigate) -> Unit, viewModel: GifsFeedViewModel) {
     val state = viewModel.state.value
 
     LaunchedEffect(key1 = 1) {
-//        if (gifs.loadState.refresh is LoadState.Error) {
-//            Toast.makeText(
-//                context,
-//                "Error: " + (gifs.loadState.refresh as LoadState.Error).error.message,
-//                Toast.LENGTH_LONG
-//            ).show()
-//        }
-
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> onNavigate(event)
@@ -54,7 +40,6 @@ fun GifsFeedScreen(
     }
 
     Column {
-
         OutlinedTextField(
             value = state.searchQuery,
             onValueChange = {
@@ -64,19 +49,23 @@ fun GifsFeedScreen(
             label = { Text("Search") },
             modifier = Modifier
                 .fillMaxWidth(),
-            trailingIcon = {Icons.Rounded.Search},
+            trailingIcon = { Icons.Rounded.Search },
             keyboardOptions = KeyboardOptions(
                 autoCorrectEnabled = false,
                 imeAction = ImeAction.Search
             ),
-            keyboardActions = KeyboardActions(onSearch = { viewModel.onEvent(GifsFeedEvent.OnSearch) }),
+            keyboardActions = KeyboardActions(onSearch = {
+                viewModel.onEvent(GifsFeedEvent.OnSearch)
+            }),
             singleLine = true
         )
         state.gifsPagingFlow?.let { dataFlow ->
             val gifs = dataFlow.collectAsLazyPagingItems()
-            Box(modifier = Modifier
-                .fillMaxWidth().padding(10.dp)
-                .weight(1f)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth().padding(10.dp)
+                    .weight(1f)
+            ) {
                 if (gifs.loadState.refresh is LoadState.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
@@ -85,7 +74,7 @@ fun GifsFeedScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(5.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(
                             count = gifs.itemCount,
@@ -99,7 +88,9 @@ fun GifsFeedScreen(
                                     onItemClick = {
                                         viewModel.onEvent(GifsFeedEvent.OnGifClick(index))
                                     },
-                                    onItemDelete = { viewModel.onEvent(GifsFeedEvent.OnDeleteGif(it))}
+                                    onItemDelete = {
+                                        viewModel.onEvent(GifsFeedEvent.OnDeleteGif(gif))
+                                    }
                                 )
                             }
                         }
@@ -113,5 +104,4 @@ fun GifsFeedScreen(
             }
         }
     }
-
 }

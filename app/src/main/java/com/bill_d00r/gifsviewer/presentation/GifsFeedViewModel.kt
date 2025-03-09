@@ -14,21 +14,20 @@ import com.bill_d00r.gifsviewer.domain.Gif
 import com.bill_d00r.gifsviewer.presentation.util.Routes
 import com.bill_d00r.gifsviewer.presentation.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
-class GifsFeedViewModel @Inject constructor(
-    private val repository: GiphyRepository
-) : ViewModel() {
-
-    private var _state = mutableStateOf(SearchState())
+class GifsFeedViewModel
+@Inject
+constructor(private val repository: GiphyRepository) :
+    ViewModel() {
+    private val _state = mutableStateOf<SearchState>(SearchState())
     val state: State<SearchState> = _state
-
 
     init {
         Log.d("VIEW_MODEL", "Initializing")
@@ -66,12 +65,13 @@ class GifsFeedViewModel @Inject constructor(
     }
 
     private fun getGifs() {
-        val gifs = repository.getGifs(_state.value.searchQuery)
-            .flow
-            .map { pagingData ->
-                pagingData.map { it.toGif() }
-            }
-            .cachedIn(viewModelScope)
+        val gifs =
+            repository
+                .getGifs(_state.value.searchQuery)
+                .flow
+                .map { pagingData ->
+                    pagingData.map { it.toGif() }
+                }.cachedIn(viewModelScope)
         _state.value = _state.value.copy(gifsPagingFlow = gifs)
     }
 

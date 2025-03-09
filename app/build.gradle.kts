@@ -2,9 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.devtools.ksp")
+    alias(libs.plugins.androidx.room)
 }
 
 android {
@@ -31,74 +32,70 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+    }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
 dependencies {
 
-    implementation ("androidx.core:core-ktx:1.7.0")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
-    implementation ("androidx.activity:activity-compose:1.3.1")
-    val composeUiVersion = "1.7.6"
-    implementation ("androidx.compose.ui:ui:$composeUiVersion")
-    implementation ("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
-    implementation ("androidx.compose.material:material:$composeUiVersion")
-    implementation ("androidx.compose.material:material-icons-extended:$composeUiVersion")
-    testImplementation ("junit:junit:4.13.2")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation ("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:$composeUiVersion")
-    debugImplementation ("androidx.compose.ui:ui-tooling:$composeUiVersion")
-    debugImplementation ("androidx.compose.ui:ui-test-manifest:$composeUiVersion")
+    implementation (libs.core.ktx)
+    implementation (libs.lifecycle.runtime.ktx)
+    implementation (libs.activity.compose)
+    implementation (libs.ui)
+    implementation (libs.ui.tooling.preview)
+    implementation (libs.material)
+    implementation (libs.material.icons.extended)
+    testImplementation (libs.junit)
+    androidTestImplementation (libs.ext.junit)
+    androidTestImplementation (libs.espresso.core)
+    androidTestImplementation (libs.ui.test.junit4)
+    debugImplementation (libs.ui.tooling)
+    debugImplementation (libs.androidx.ui.test.manifest)
 
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
     // Coil Compose
-    implementation ("io.coil-kt:coil-compose:2.2.2")
-    implementation("io.coil-kt:coil-gif:2.2.2")
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation (libs.coil.compose)
+    implementation(libs.coil.gif)
+
+
+    implementation (libs.androidx.lifecycle.runtime.compose)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
 
     // Dagger - Hilt
-    implementation ("com.google.dagger:hilt-android:2.51.1")
-    kapt ("com.google.dagger:hilt-android-compiler:2.51.1")
-    kapt ("androidx.hilt:hilt-compiler:1.2.0")
-    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation (libs.hilt.android)
+    ksp (libs.hilt.android.compiler)
+    ksp (libs.androidx.hilt.compiler)
+    implementation (libs.androidx.hilt.navigation.compose)
 
     // Paging
-    implementation ("androidx.paging:paging-runtime-ktx:3.1.1")
-    implementation ("androidx.paging:paging-compose:1.0.0-alpha18")
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.androidx.paging.compose)
 
     // Retrofit
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-moshi:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3")
+    implementation (libs.retrofit)
+    implementation (libs.converter.moshi)
 
     //Moshi
-    val moshi_version = "1.15.2"
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:$moshi_version")
-    implementation ("com.squareup.moshi:moshi:$moshi_version")
-    implementation ("com.squareup.moshi:moshi-adapters:$moshi_version")
-    implementation ("com.squareup.moshi:moshi-kotlin:$moshi_version")
+    ksp(libs.moshi.kotlin.codegen)
+    implementation (libs.moshi)
+    implementation (libs.moshi.adapters)
+    implementation (libs.moshi.kotlin)
 
     // Room
-    implementation ("androidx.room:room-ktx:2.5.1")
-    kapt ("androidx.room:room-compiler:2.5.1")
-    implementation ("androidx.room:room-paging:2.5.1")
-
-    implementation("com.github.bumptech.glide:glide:4.14.2")
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    implementation (libs.androidx.room.ktx)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.paging)
 }

@@ -6,8 +6,6 @@ import com.squareup.moshi.Json
 data class GiphyDto(
     @Json(name = "data")
     val `data`: List<DataDto> = listOf(),
-    @Json(name = "meta")
-    val meta: MetaDto = MetaDto(),
     @Json(name = "pagination")
     val pagination: PaginationDto = PaginationDto()
 )

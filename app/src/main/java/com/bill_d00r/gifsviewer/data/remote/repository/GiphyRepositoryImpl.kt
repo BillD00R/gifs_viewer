@@ -14,45 +14,44 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class GiphyRepositoryImpl @Inject constructor(
-    private val gifDb: GifDatabase,
-    private val giphyApi: GiphyApi,
-    private val gifImageDownloader: GifImageDownloader
-) : GiphyRepository {
+class GiphyRepositoryImpl
+    @Inject
+    constructor(
+        private val gifDb: GifDatabase,
+        private val giphyApi: GiphyApi,
+        private val gifImageDownloader: GifImageDownloader,
+    ) : GiphyRepository {
+        @OptIn(ExperimentalPagingApi::class)
+        override fun getGifs(searchQuery: String): Pager<Int, GifEntity> {
+            Log.d("SEARCH_QUERY", "In Repository: $searchQuery")
+            return Pager(
+                config =
+                    PagingConfig(
+                        pageSize = 4,
+                    ),
+                remoteMediator =
+                    GiphyRemoteMediator(
+                        gifDatabase = gifDb,
+                        giphyApi = giphyApi,
+                        gifImageDownloader = gifImageDownloader,
+                        searchQuery = searchQuery,
+                        initialRefresh = true,
+                    ),
+                pagingSourceFactory = {
+                    gifDb.dao.pagingSource()
+                },
+            )
+        }
 
-
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getGifs(searchQuery: String): Pager<Int, GifEntity> {
-        Log.d("SEARCH_QUERY", "In Repository: ${searchQuery}")
-        return Pager(
-            config = PagingConfig(
-                pageSize = 4
-            ),
-            remoteMediator = GiphyRemoteMediator(
-                gifDatabase = gifDb,
-                giphyApi = giphyApi,
-                gifImageDownloader = gifImageDownloader,
-                searchQuery = searchQuery,
-                initialRefresh = true
-            ),
-            pagingSourceFactory = {
-                gifDb.dao.pagingSource()
+        override fun deleteGif(remoteId: String) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val gifs = gifDb.dao.getFiles(remoteId)
+                gifs.forEach {
+                    val files = listOf(it.imagePath, it.previewImagePath)
+                    gifImageDownloader.deleteImages(files)
+                }
+                gifDb.dao.delete(remoteId)
+                gifDb.deletedDao.insert(DeletedEntity(deletedId = remoteId))
             }
-        )
-    }
-
-    override fun deleteGif(remoteId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val gifs = gifDb.dao.getFiles(remoteId)
-            gifs.forEach {
-                val files = listOf(it.imagePath, it.previewImagePath)
-                gifImageDownloader.deleteImages(files)
-            }
-            gifDb.dao.delete(remoteId)
-            gifDb.deletedDao.insert(DeletedEntity(deletedId = remoteId))
-
         }
     }
-
-
-}
