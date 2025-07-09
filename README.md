@@ -49,15 +49,18 @@ git clone https://github.com/BillD00R/gifs_viewer.git
 
 ---
 
-🧑‍💻 Author
+## 🧑‍💻 Author
 
-Oleksandr Butyrskyi
+**Oleksandr Butyrskyi**
+
 📍 Krakow, Poland
+
 📧 butyrsky2.0@outlook.com
-🔗 LinkedIn: https://www.linkedin.com/in/alexander-butyrsky/
 
-⸻
+🔗[LinkedIn](https://www.linkedin.com/in/alexander-butyrsky/)
 
-📄 License
+---
+
+## 📄 License
 
 MIT — feel free to fork, modify, or contribute.
