@@ -40,7 +40,8 @@ A modern Android app built with Jetpack Compose, Paging 3, and Coil for browsing
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/BillD00R/gifs_viewer.git```
+git clone https://github.com/BillD00R/gifs_viewer.git
+```
 
 2.	Open in Android Studio
 
