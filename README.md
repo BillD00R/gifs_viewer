@@ -46,6 +46,8 @@ git clone https://github.com/BillD00R/gifs_viewer.git
 
 3.	Run on emulator or physical device
 
+---
+
 🧑‍💻 Author
 
 Oleksandr Butyrskyi
